@@ -1,0 +1,127 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## 0. One-Minute Overview
+
+Your daily workflow must balance **state-of-the-art research**, **industrial-strength engineering**, and **strict legal compliance**. That means: read papers before you write code ([researchgate.net][1]), treat every line as potentially user-facing production, test first ([medium.com][2]), version everything (code + data + models) ([medium.com][3]), run CI on every push ([github.blog][4]), document why the model answered the way it did (LIME/SHAP) ([datacamp.com][5]), measure and mitigate hallucination ([arxiv.org][6]), harden privacy under Japan’s APPI ([practiceguides.chambers.com][7]), meter usage cleanly with Stripe ([stripe.com][8]), and audit fairness like the EEOC expects ([eeoc.gov][9]).
+
+---
+
+## 1. Stay Current — “SOTA or Bust”
+
+| What                        | Rule                                                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Daily Scan**              | Check arXiv’s *cs.CL, cs.LG* RSS and record promising techniques in the team’s **Research Log** before 11 a.m. JST.                 |
+| **Critical Reading**        | Summarize *why* a paper beats baselines, its compute cost, and reproducibility flags (e.g., missing seeds) ([researchgate.net][1]). |
+| **Spike Prototypes**        | Build a *minimal* Colab/Python proof-of-concept within 24 h; discard if gains < 3 pp over current metric.                           |
+| **“No Black-Boxes” Policy** | Prefer algorithms with published internals + explainability hooks; Gemini is **only** for NLG post-processing, never for scoring.   |
+
+---
+
+## 2. Rigorous Experimentation & Reproducibility
+
+### 2.1 Test-Driven Development (TDD)
+
+* Write the failing test **first** for every data transformation, feature extractor, and API route ([medium.com][2]).
+* Coverage must remain **≥ 90 %** on `main`; red pipelines block merges.
+
+### 2.2 Version Everything
+
+* **Code** in Git; **data & models** in DVC; tag every experiment with hash + hyper-params ([medium.com][3]).
+* Re-run of `dvc repro` must recreate metrics within ±0.1 pp.
+
+### 2.3 Continuous Integration / Delivery
+
+* GitHub Actions workflow: lint → unit tests → integration tests → security scan → Docker build → deploy to staging ([github.blog][4]).
+* Upgrade runners to **Node 20** by default ([github.blog][10]).
+
+---
+
+## 3. Explainability & Fairness
+
+| Area                      | Mandatory Practice                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Local Explanations**    | Wrap each score with LIME/SHAP attribution; expose top-5 positive & negative features ([datacamp.com][5]).           |
+| **Bias Audits**           | Run quarterly adverse-impact analysis; document results and remediation in Bias Audit Report ([eeoc.gov][11]).       |
+| **Fairness Benchmarks**   | Track demographic parity & equal opportunity gaps; flag > 5 % disparities for engineering review ([nypost.com][12]). |
+| **User-Facing Rationale** | Every report must show “Why we scored X” paragraphs generated via structured template + Gemini summarisation.        |
+
+---
+
+## 4. LLM Safety & Hallucination Control
+
+1. **Retrieval-Augmented Generation (RAG)** is mandatory for any generated text ([arxiv.org][6]).
+2. Follow Google’s **Gemini Safety Playbook**: refusal handling, toxicity checks, jail-break tests ([developers.google.com][13]).
+3. Maintain a hallucination evaluation set; target factual error rate < 1 %.
+
+---
+
+## 5. Privacy, Security & Legal
+
+* Collect explicit candidate consent; store timestamp + IP for APPI logs ([practiceguides.chambers.com][7]).
+* Encrypt PII at rest with AES-256; rotate keys quarterly.
+* Provide “Right to Delete” endpoint returning 204 No Content within 14 days.
+* Keep an audit trail for all model decisions; required for future EEOC-style inquiries ([eeoc.gov][14]).
+
+---
+
+## 6. Scalable Data & Retrieval Infrastructure
+
+* Use Pinecone **namespace per tenant** for strict data isolation ([pinecone.io][15]).
+* Don’t exceed 40 ms p99 vector search latency; add HNSW parameter tuning PRs as needed.
+
+---
+
+## 7. Billing & Usage Metering
+
+* One “analysis” = 1 CV + 1 JD scored; count via server-side event, send to Stripe metered subscription API ([stripe.com][8]).
+* Expose real-time usage in dashboard to maintain transparency (reduces churn).
+
+---
+
+## 8. Code Review, Documentation & Knowledge-Sharing
+
+* Each PR requires **≥ 1** senior approval; use GitHub *IssueOps* templates for check-lists ([github.blog][16]).
+* Any public method must carry a **docstring** explaining *why*, not just *what*.
+* Update `ARCHITECTURE.md` after merging schema or endpoint changes.
+
+---
+
+### 9. Definition of “Done” Checklist
+
+1. All tests green & coverage ≥ 90 %.
+2. CI/CD pipeline passed.
+3. Docs & changelog updated.
+4. New or updated functionality demoed to QA.
+5. APPI & bias audit implications reviewed.
+
+---
+
+## 10. Culture of Continuous Improvement
+
+* Schedule *Weekly Retros* every Friday 16:00 JST to revisit failures & new SOTA findings.
+* Celebrate **deleted code**—simplicity is a feature.
+* If you’re unsure, **write a test, open a question, or escalate**; silent assumptions cost more than “stupid” questions.
+
+---
+
+Adhering to these granular rules ensures every junior teammate moves with the discipline of a senior scientist while we grow *RecruiterAI Pro* into a trusted, compliant, and market-leading platform.
+
+[1]: https://www.researchgate.net/publication/392595159_Model_Versioning_and_Reproducibility_Challenges_in_Large-Scale_ML_Projects?utm_source=chatgpt.com "(PDF) Model Versioning and Reproducibility Challenges in Large ..."
+[2]: https://medium.com/mlops-community/test-driven-development-in-mlops-part-1-8894575f4dec?utm_source=chatgpt.com "Test-Driven Development in MLOps Part 1 - Medium"
+[3]: https://medium.com/%40thisis-Shitanshu/implementing-version-control-for-reproducible-machine-learning-projects-a1a6961d84a4?utm_source=chatgpt.com "Implementing Version Control for Reproducible Machine Learning ..."
+[4]: https://github.blog/enterprise-software/ci-cd/build-ci-cd-pipeline-github-actions-four-steps/?utm_source=chatgpt.com "How to build a CI/CD pipeline with GitHub Actions in four simple steps"
+[5]: https://www.datacamp.com/tutorial/explainable-ai-understanding-and-trusting-machine-learning-models?utm_source=chatgpt.com "Explainable AI, LIME & SHAP for Model Interpretability - DataCamp"
+[6]: https://arxiv.org/abs/2401.01313?utm_source=chatgpt.com "A Comprehensive Survey of Hallucination Mitigation Techniques ..."
+[7]: https://practiceguides.chambers.com/practice-guides/data-protection-privacy-2025/japan/trends-and-developments?utm_source=chatgpt.com "Data Protection & Privacy 2025 - Japan - Global Practice Guides"
+[8]: https://stripe.com/resources/more/what-is-metered-billing-heres-how-this-adaptable-billing-model-works?utm_source=chatgpt.com "What is metered billing? Here's how this adaptable billing model works"
+[9]: https://www.eeoc.gov/newsroom/eeoc-launches-initiative-artificial-intelligence-and-algorithmic-fairness?utm_source=chatgpt.com "EEOC Launches Initiative on Artificial Intelligence and Algorithmic ..."
+[10]: https://github.blog/changelog/2024-03-06-github-actions-all-actions-will-run-on-node20-instead-of-node16-by-default/?utm_source=chatgpt.com "GitHub Actions; All Actions will run on Node20 instead of Node16 by ..."
+[11]: https://www.eeoc.gov/meetings/meeting-january-31-2023-navigating-employment-discrimination-ai-and-automated-systems-new/klein?utm_source=chatgpt.com "Testimony of Adam T. Klein | U.S. Equal Employment Opportunity ..."
+[12]: https://nypost.com/2025/06/24/business/ai-hiring-tools-favor-black-female-candidates-over-whites-males/?utm_source=chatgpt.com "AI-powered hiring tools favor black and female job candidates over white and male applicants: study"
+[13]: https://developers.google.com/machine-learning/resources/safety-gen-ai?utm_source=chatgpt.com "Safety guidance | Gemini API | Google AI for Developers"
+[14]: https://www.eeoc.gov/newsroom/eeoc-hearing-explores-potential-benefits-and-harms-artificial-intelligence-and-other?utm_source=chatgpt.com "EEOC Hearing Explores Potential Benefits and Harms of Artificial ..."
+[15]: https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/?utm_source=chatgpt.com "Vector Databases in Production for Busy Engineers - Pinecone"
+[16]: https://github.blog/engineering/issueops-automate-ci-cd-and-more-with-github-issues-and-actions/?utm_source=chatgpt.com "IssueOps: Automate CI/CD (and more!) with GitHub Issues and Actions"
