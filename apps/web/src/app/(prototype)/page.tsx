@@ -1,7 +1,9 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Upload, FileText, User, BarChart3, Brain, Download, Settings, Search, TrendingUp, Target, Users, Calendar, ChevronRight, Star, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
-const RecruiterAIApp = () => {
+export default function RecruiterAIApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [analysisStarted, setAnalysisStarted] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -48,7 +50,7 @@ const RecruiterAIApp = () => {
     setActiveTab('report');
   };
 
-  const ScoreCircle = ({ score, size = 120 }) => (
+  const ScoreCircle = ({ score, size = 120 }: { score: number; size?: number }) => (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
         <circle
@@ -83,7 +85,7 @@ const RecruiterAIApp = () => {
     </div>
   );
 
-  const DimensionBar = ({ label, score, weight, details }) => (
+  const DimensionBar = ({ label, score, weight, details }: { label: string; score: number; weight: number; details: string; }) => (
     <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-center mb-2">
         <span className="font-medium text-gray-800">{label}</span>
@@ -219,31 +221,6 @@ const RecruiterAIApp = () => {
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
         <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
-      </div>
-
-      {/* Header */}
-      <div className="relative bg-white/80 backdrop-blur-sm shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Brain className="w-8 h-8 text-blue-600" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  RecruiterAI Pro
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>AI Ready</span>
-              </div>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8 relative">
@@ -538,6 +515,4 @@ const RecruiterAIApp = () => {
       </div>
     </div>
   );
-};
-
-export default RecruiterAIApp;
+}
